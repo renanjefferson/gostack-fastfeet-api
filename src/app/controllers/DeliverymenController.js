@@ -13,11 +13,11 @@ class DeliverymenController {
       return res.status(400).json({ error: 'Falha na validação.' });
     }
 
-    const deliverymenExist = await Deliverymen.findOne({
+    const deliverymanExist = await Deliverymen.findOne({
       where: { email: req.body.email },
     });
 
-    if (deliverymenExist) {
+    if (deliverymanExist) {
       return res.status(400).json({ error: 'Entregador já existe.' });
     }
 
