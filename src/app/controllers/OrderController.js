@@ -23,13 +23,15 @@ class OrderController {
     const recipient = await Recipient.findByPk(recipient_id);
 
     if (!recipient) {
-      return res.status(400).json({ error: 'Destinatário não foi encontrado' });
+      return res
+        .status(401)
+        .json({ error: 'Destinatário não foi encontrado.' });
     }
 
     const deliveryman = await Deliverymen.findByPk(deliveryman_id);
 
     if (!deliveryman) {
-      return res.status(400).json({ error: 'Entregador não foi encontrado' });
+      return res.status(401).json({ error: 'Entregador não foi encontrado.' });
     }
 
     const order = await Order.create({ recipient_id, deliveryman_id, product });
@@ -60,6 +62,55 @@ class OrderController {
     });
 
     return res.json({ orders });
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      recipient_id: Yup.number().required(),
+      deliveryman_id: Yup.number().required(),
+      product: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Falha na validação.' });
+    }
+
+    const { recipient_id, deliveryman_id, product } = req.body;
+
+    const order = await Order.findByPk(req.params.id);
+
+    if (!order) {
+      return res.status(401).json({ error: 'Ordem não foi encontrada.' });
+    }
+
+    const recipient = await Recipient.findByPk(recipient_id);
+
+    if (!recipient) {
+      return res
+        .status(401)
+        .json({ error: 'Destinatário não foi encontrado.' });
+    }
+
+    const deliveryman = await Deliverymen.findByPk(deliveryman_id);
+
+    if (!deliveryman) {
+      return res.status(401).json({ error: 'Entregador não foi encontrado.' });
+    }
+
+    const orderUpdate = await order.update(req.body);
+
+    return res.json({ orderUpdate });
+  }
+
+  async delete(req, res) {
+    const order = await Order.findByPk(req.params.id);
+
+    if (!order) {
+      return res.status(401).json({ error: 'Encomenda não encontrada!' });
+    }
+    await order.destroy();
+
+    return res.json({ message: 'Encomenda removida.' });
   }
 }
 export default new OrderController();
