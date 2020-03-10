@@ -15,12 +15,27 @@ import OpenDeliveriesController from './app/controllers/OpenDeliveriesController
 
 import CompletedDeliveriesController from './app/controllers/CompletedDeliveriesController';
 
+import StartDeliveryController from './app/controllers/StartDeliveryController';
+
+import EndDeliveryController from './app/controllers/EndDeliveryController';
+
 import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
+
+routes.put(
+  '/deliveryman/:deliverymanId/start/:deliveryId/deliveries',
+  StartDeliveryController.update
+);
+
+routes.put(
+  '/deliveryman/:deliverymanId/end/:deliveryId/deliveries',
+  upload.single('file'),
+  EndDeliveryController.update
+);
 
 routes.get(
   '/deliveryman/:deliverymanId/deliveries/open',
