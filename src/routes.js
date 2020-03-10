@@ -19,6 +19,8 @@ import StartDeliveryController from './app/controllers/StartDeliveryController';
 
 import EndDeliveryController from './app/controllers/EndDeliveryController';
 
+import DeliveryProblemsController from './app/controllers/DeliveryProblemsController';
+
 import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
@@ -45,6 +47,14 @@ routes.get(
 routes.get(
   '/deliveryman/:deliverymanId/deliveries/completed',
   CompletedDeliveriesController.show
+);
+
+routes.get('/delivery/problems', DeliveryProblemsController.index);
+routes.get('/delivery/:deliveryId/problems', DeliveryProblemsController.show);
+routes.post('/delivery/:deliveryId/problems', DeliveryProblemsController.store);
+routes.delete(
+  '/problem/:problemId/cancel-delivery',
+  DeliveryProblemsController.delete
 );
 
 routes.use(authMiddleware);
